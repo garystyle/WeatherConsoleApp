@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherConsoleApp.Configurations;
 using WeatherConsoleApp.Services;
+using WeatherConsoleApp.Extensions;
 using NLog.Web;
 using NLog.Extensions.Logging;
 
@@ -41,16 +42,14 @@ namespace WeatherConsoleApp
            }
         );
 
-        //註冊服務
+        //註冊服務執行者
         services.AddTransient<Runner>();
-        services.AddHttpClient<WeatherService>();
-        services.AddSingleton<WeatherService>();
-        services.AddHttpClient<LineNotifyService>();
-        services.AddSingleton<LineNotifyService>();
+        //註冊各類工作服務
+        services.AddJobService();
 
         //建立依賴服務提供者
         var serviceProvider = services.BuildServiceProvider();
-        //執行主服務
+        //由服務執行者啟動各類工作
         await serviceProvider.GetRequiredService<Runner>().Run();
 
         //Console.Read();
